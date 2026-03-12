@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caike Santana - Reestruturação Emocional</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome para os ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Fontes do Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Swiper CSS (Para o Carrossel de Depoimentos) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans:['Montserrat', 'sans-serif'],
+                        display:['Syncopate', 'sans-serif'], 
+                    },
+                    colors: {
+                        bgBrand: '#222223', 
+                        bgCard: '#1a1a1b', 
+                        yellowMain: '#FFB000', 
+                        yellowLight: '#FFCE00', 
+                        orangeCTA: '#FF4200', 
+                        orangeHover: '#e63b00',
+                        grayBrand: '#757575', 
+                        textLight: '#E5E7EB'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #222223;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* EFEITO DE FUNDO ANIMADO GLOBAL */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none; 
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px); 
+            opacity: 0.45;
+            mix-blend-mode: screen; 
+            animation: float 20s infinite alternate ease-in-out;
+        }
+
+        .blob-1 { width: max(300px, 50vw); height: max(300px, 50vw); background-color: #FFB000; top: -10%; left: -10%; animation-duration: 25s; }
+        .blob-2 { width: max(280px, 45vw); height: max(280px, 45vw); background-color: #FF4200; bottom: -15%; right: -10%; animation-duration: 30s; animation-direction: alternate-reverse; }
+        .blob-3 { width: max(250px, 35vw); height: max(250px, 35vw); background-color: #FFCE00; top: 40%; left: 50%; transform: translateX(-50%); animation-duration: 35s; }
+        .blob-4 { width: max(250px, 40vw); height: max(250px, 40vw); background-color: #FF4200; bottom: -10%; left: -15%; animation-duration: 28s; animation-delay: 5s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(0.9); }
+            33% { transform: translate(4vw, 8vh) scale(1.1); } 
+            66% { transform: translate(-4vw, 5vh) scale(0.85); }
+            100% { transform: translate(0, 0) scale(1.05); }
+        }
+
+        @media (min-width: 768px) { .blob { filter: blur(130px); } }
+
+        .text-shadow { text-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+        .text-glow { text-shadow: 0 0 20px rgba(255, 176, 0, 0.4); }
+        
+        /* ------------------------------------------------ */
+        /* EFEITO DE FUNDO EXCLUSIVO DA SEÇÃO DEPOIMENTOS   */
+        /* ------------------------------------------------ */
+        .testi-light {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.35;
+            mix-blend-mode: color-dodge;
+            animation: moveLights 15s infinite alternate ease-in-out;
+            pointer-events: none;
+        }
+        
+        @keyframes moveLights {
+            0% { transform: translate(0, 0) scale(0.8); }
+            50% { transform: translate(15vw, 5vh) scale(1.3); }
+            100% { transform: translate(-5vw, -10vh) scale(0.9); }
+        }
+
+        /* ---------------------------------- */
+        /* CSS ESPECÍFICO PARA O CARROSSEL    */
+        /* ---------------------------------- */
+        .swiper-slide {
+            transition: all 0.5s ease-in-out;
+            transform: scale(0.85);
+            opacity: 0.3;
+            filter: grayscale(100%);
+        }
+        
+        .swiper-slide-active {
+            transform: scale(1.05);
+            opacity: 1;
+            filter: grayscale(0%);
+            z-index: 10;
+        }
+
+        .testi-card {
+            border: 2px solid rgba(117, 117, 117, 0.2);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .swiper-slide-active .testi-card {
+            border-color: #FFB000;
+            box-shadow: 0 10px 40px rgba(255, 176, 0, 0.2);
+        }
+
+        .swiper-button-next, .swiper-button-prev {
+            color: #FFB000 !important;
+            background-color: rgba(26, 26, 27, 0.8);
+            width: 50px !important;
+            height: 50px !important;
+            border-radius: 50%;
+            border: 2px solid #FFB000;
+            backdrop-filter: blur(4px);
+        }
+        .swiper-button-next::after, .swiper-button-prev::after {
+            font-size: 1.2rem !important;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .swiper-button-next, .swiper-button-prev { display: none !important; }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-yellowMain selection:text-bgBrand w-full overflow-x-hidden">
+
+    <!-- FUNDO ANIMADO GLOBAL -->
+    <div class="animated-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <header class="max-w-5xl mx-auto px-4 pt-12 pb-16 md:pt-20 md:pb-24 text-center flex flex-col items-center relative z-10">
+        <h1 class="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-6 md:mb-10 leading-tight text-shadow uppercase tracking-wide">
+            SUPERE A ANSIEDADE E VIVA SUA EXPERIÊNCIA FORA DO BRASIL COM MAIS <span class="text-yellowMain text-glow">LEVEZA E SEGURANÇA</span>
+        </h1>
+
+        <div class="relative w-full max-w-3xl aspect-video bg-black rounded-xl border-2 border-yellowMain/30 overflow-hidden mb-8 md:mb-12 flex items-center justify-center shadow-[0_10px_50px_rgba(255,176,0,0.25)]">
+            <img src="https://placehold.co/800x450/1a1a1b/FFB000?text=Aperte+o+Play" alt="Vídeo Apresentação" class="absolute inset-0 w-full h-full object-cover opacity-50">
+            <button class="relative w-16 h-16 md:w-20 md:h-20 bg-yellowMain border-4 border-yellowLight rounded-full flex items-center justify-center text-bgBrand hover:scale-110 transition shadow-[0_0_25px_rgba(255,206,0,0.6)]">
+                <i class="fa-solid fa-play text-xl md:text-2xl ml-1"></i>
+            </button>
+        </div>
+
+        <!-- CTA TOPO STRIPE -->
+        <a href="https://buy.stripe.com/bJe14p8dE6wi2Ikdn7ffy00" target="_blank" rel="noopener noreferrer" class="bg-orangeCTA hover:bg-orangeHover text-white font-bold text-base sm:text-lg md:text-xl py-4 sm:py-5 px-6 sm:px-10 rounded shadow-[0_0_35px_rgba(255,66,0,0.5)] transition transform hover:-translate-y-1 w-full max-w-lg uppercase tracking-wide">
+            QUERO MUDAR ESSA HISTÓRIA
+        </a>
+    </header>
+
+    <!-- O PROCESSO TERAPÊUTICO -->
+    <section class="bg-bgCard/90 backdrop-blur-md py-12 md:py-20 border-y border-grayBrand/20 relative z-10 w-full">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="text-center mb-10 md:mb-16">
+                <h2 class="font-display text-xl sm:text-2xl lg:text-3xl text-yellowMain uppercase mb-6 leading-relaxed text-glow">
+                    O PROCESSO TERAPÊUTICO QUE TRATA A CAUSA DA ANSIEDADE VIVENDO FORA?
+                </h2>
+                <p class="text-textLight text-sm md:text-base mb-6 max-w-4xl mx-auto leading-relaxed font-semibold">
+                    É UM PROCESSO TERAPÊUTICO FOCADO EM TRATAR A CAUSA DA ANSIEDADE, NÃO APENAS ALIVIAR SINTOMAS.
+                </p>
+                <p class="text-gray-300 text-sm md:text-base mb-6 max-w-4xl mx-auto leading-relaxed">
+                    Através da regressão e atualização de memórias emocionais, identificamos e transformamos a raiz dos padrões que mantêm medo, insegurança e sensação de não pertencimento vivendo fora.
+                </p>
+                <p class="text-yellowLight text-sm md:text-base font-bold max-w-3xl mx-auto leading-relaxed uppercase">
+                    O objetivo é gerar mudanças reais na forma como você reage e vive essa fase no exterior.
+                </p>
+            </div>
+
+            <!-- Grid de Sintomas -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mt-10">
+                <div class="bg-bgBrand/80 backdrop-blur-sm border border-grayBrand/30 p-6 rounded-lg flex flex-col items-center text-center hover:border-yellowMain hover:shadow-[0_0_15px_rgba(255,176,0,0.2)] transition duration-300">
+                    <i class="fa-solid fa-bed text-yellowMain text-3xl mb-4"></i><h3 class="font-bold text-xs md:text-sm uppercase">Ansiedade e Insônia</h3>
+                </div>
+                <div class="bg-bgBrand/80 backdrop-blur-sm border border-grayBrand/30 p-6 rounded-lg flex flex-col items-center text-center hover:border-yellowMain hover:shadow-[0_0_15px_rgba(255,176,0,0.2)] transition duration-300">
+                    <i class="fa-solid fa-battery-quarter text-yellowMain text-3xl mb-4"></i><h3 class="font-bold text-xs md:text-sm uppercase">Procrastinação e Esgotamento</h3>
+                </div>
+                <div class="bg-bgBrand/80 backdrop-blur-sm border border-grayBrand/30 p-6 rounded-lg flex flex-col items-center text-center hover:border-yellowMain hover:shadow-[0_0_15px_rgba(255,176,0,0.2)] transition duration-300">
+                    <i class="fa-solid fa-sack-dollar text-yellowMain text-3xl mb-4"></i><h3 class="font-bold text-xs md:text-sm uppercase">Bloqueios com Dinheiro e Abundância</h3>
+                </div>
+                <div class="bg-bgBrand/80 backdrop-blur-sm border border-grayBrand/30 p-6 rounded-lg flex flex-col items-center text-center hover:border-yellowMain hover:shadow-[0_0_15px_rgba(255,176,0,0.2)] transition duration-300">
+                    <i class="fa-solid fa-person-walking-luggage text-yellowMain text-3xl mb-4"></i><h3 class="font-bold text-xs md:text-sm uppercase">Saudade Excessiva e Solidão</h3>
+                </div>
+                <div class="bg-bgBrand/80 backdrop-blur-sm border border-grayBrand/30 p-6 rounded-lg flex flex-col items-center text-center hover:border-yellowMain hover:shadow-[0_0_15px_rgba(255,176,0,0.2)] transition duration-300">
+                    <i class="fa-solid fa-shield-halved text-yellowMain text-3xl mb-4"></i><h3 class="font-bold text-xs md:text-sm uppercase">Insegurança e Dificuldade em Confiar</h3>
+                </div>
+                <div class="bg-bgBrand/80 backdrop-blur-sm border border-grayBrand/30 p-6 rounded-lg flex flex-col items-center text-center hover:border-yellowMain hover:shadow-[0_0_15px_rgba(255,176,0,0.2)] transition duration-300">
+                    <i class="fa-solid fa-bolt text-yellowMain text-3xl mb-4"></i><h3 class="font-bold text-xs md:text-sm uppercase">Fobias e Traumas</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OS 4 BLOCOS DA MUDANÇA REAL -->
+    <section class="max-w-6xl mx-auto px-4 py-16 md:py-24 text-center relative z-10">
+        <h2 class="font-display text-2xl md:text-3xl mb-12 md:mb-16 uppercase text-shadow">
+            O PROCESSO POR TRÁS DA <span class="text-yellowMain text-glow">MUDANÇA REAL</span>
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            <div class="bg-yellowMain text-bgBrand p-8 rounded-xl shadow-lg flex flex-col items-center text-center transform transition hover:-translate-y-2">
+                <div class="bg-bgBrand text-yellowMain w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full mb-6 shadow-md border-2 border-bgBrand">
+                    <span class="font-display text-xl md:text-2xl">1</span>
+                </div>
+                <h3 class="font-bold mb-3 md:mb-4 text-base md:text-lg uppercase tracking-tight">Mapeamento da Causa</h3>
+                <p class="text-xs md:text-sm font-medium">Identificamos a origem emocional que sustenta a ansiedade. Não tratamos apenas o sintoma, mas o evento que condicionou sua resposta emocional.</p>
+            </div>
+            <div class="bg-bgCard/80 backdrop-blur border border-yellowMain/40 text-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center transform transition hover:-translate-y-2 hover:shadow-[0_0_20px_rgba(255,176,0,0.15)]">
+                <div class="bg-yellowMain text-bgBrand w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full mb-6 shadow-md">
+                    <span class="font-display text-xl md:text-2xl">2</span>
+                </div>
+                <h3 class="font-bold mb-3 md:mb-4 text-base md:text-lg text-yellowMain uppercase tracking-tight">Acesso à Memória Ativa</h3>
+                <p class="text-xs md:text-sm text-gray-300">Por meio de técnicas específicas, acessamos as memórias que ainda estão influenciando seu comportamento atual, mesmo em nível inconsciente.</p>
+            </div>
+            <div class="bg-bgCard/80 backdrop-blur border border-yellowMain/40 text-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center transform transition hover:-translate-y-2 hover:shadow-[0_0_20px_rgba(255,176,0,0.15)]">
+                <div class="bg-yellowMain text-bgBrand w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full mb-6 shadow-md">
+                    <span class="font-display text-xl md:text-2xl">3</span>
+                </div>
+                <h3 class="font-bold mb-3 md:mb-4 text-base md:text-lg text-yellowMain uppercase tracking-tight">Atualização Neurológica</h3>
+                <p class="text-xs md:text-sm text-gray-300">A experiência é reorganizada no sistema nervoso. O cérebro deixa de reagir como se o passado ainda estivesse acontecendo.</p>
+            </div>
+            <div class="bg-yellowMain text-bgBrand p-8 rounded-xl shadow-lg flex flex-col items-center text-center transform transition hover:-translate-y-2">
+                <div class="bg-bgBrand text-yellowMain w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full mb-6 shadow-md border-2 border-bgBrand">
+                    <span class="font-display text-xl md:text-2xl">4</span>
+                </div>
+                <h3 class="font-bold mb-3 md:mb-4 text-base md:text-lg uppercase tracking-tight">Consolidação da Mudança</h3>
+                <p class="text-xs md:text-sm font-medium">O padrão emocional é encerrado. A resposta automática muda e isso se reflete nas decisões, nos relacionamentos e na forma como você vive.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FASES DOS PROTOCOLOS -->
+    <section class="max-w-5xl mx-auto px-4 py-12 md:py-16 relative z-10">
+        <h2 class="font-display text-xl md:text-3xl text-center mb-10 md:mb-16 uppercase leading-relaxed">
+            O QUE VOCÊ VIVENCIA DENTRO DO <br><span class="text-yellowMain text-glow">PROCESSO TERAPÊUTICO?</span>
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-10">
+            <div class="bg-bgCard/90 backdrop-blur-md border-t-4 border-yellowMain p-6 md:p-8 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                <p class="text-yellowLight text-xs font-bold mb-2 uppercase tracking-widest">Fase 1</p>
+                <h3 class="font-bold text-lg md:text-xl mb-4 uppercase">Mapeamento da Raiz Emocional</h3>
+                <p class="text-sm text-gray-300 leading-relaxed mb-4">Iniciamos com uma conversa estratégica e estruturada para identificar com clareza o que está sustentando sua ansiedade e seus padrões emocionais.</p>
+                <p class="text-sm text-gray-300 leading-relaxed">Investigamos as origens invisíveis do sintoma, acessando memórias e experiências que ainda influenciam suas reações no presente.</p>
+            </div>
+            <div class="bg-bgCard/90 backdrop-blur-md border-t-4 border-orangeCTA p-6 md:p-8 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                <p class="text-orangeCTA text-xs font-bold mb-2 uppercase tracking-widest">Fases 2 e 3</p>
+                <h3 class="font-bold text-lg md:text-xl mb-4 uppercase">Acesso, Atualização e Reorganização</h3>
+                <p class="text-sm text-gray-300 leading-relaxed mb-4"><strong>Estamos na etapa prática do processo.</strong> Trabalhamos diretamente nas memórias que mantêm o padrão ativo, promovendo a atualização emocional dessas experiências e reorganizando a resposta do sistema nervoso.</p>
+                <p class="text-sm text-gray-300 leading-relaxed">Não tratamos apenas um episódio isolado. Atuamos sobre todas as raízes que sustentam o ciclo, sejam conscientes ou não.</p>
+            </div>
+        </div>
+        <div class="text-center mb-10 bg-yellowMain text-bgBrand py-4 px-4 md:px-6 rounded-lg font-bold uppercase tracking-wide text-xs sm:text-sm md:text-base shadow-[0_0_20px_rgba(255,176,0,0.3)]">
+            À medida que cada raiz é trabalhada, o padrão começa perder força de forma consistente.
+        </div>
+        <div class="border border-yellowMain/50 bg-bgCard/80 backdrop-blur-sm rounded-lg p-5 md:p-6 flex flex-col md:flex-row items-center gap-4 md:gap-6 mb-12 shadow-xl">
+            <i class="fa-solid fa-triangle-exclamation text-yellowMain text-3xl md:text-4xl text-glow flex-shrink-0"></i>
+            <p class="text-xs md:text-sm text-gray-300 leading-relaxed text-center md:text-left">
+                <strong class="text-yellowMain uppercase">Importante:</strong> Cada pessoa possui uma história emocional única. Alguns processos evoluem de forma mais rápida, enquanto outros demandam um aprofundamento maior para que todas as raízes sejam tratadas com precisão. O foco não está no tempo, mas na consistência da mudança.
+            </p>
+        </div>
+        <p class="text-center font-display text-sm sm:text-base md:text-xl leading-relaxed mt-10">
+            A CADA MEMÓRIA ATUALIZADA, O SINTOMA PERDE INTENSIDADE.<br>
+            <span class="text-yellowMain text-glow mt-3 block">QUANDO A RAIZ É TRATADA POR COMPLETO, A FORMA COMO VOCÊ REAGE À VIDA MUDA DE MANEIRA SÓLIDA E DURADOURA.</span>
+        </p>
+    </section>
+
+    <!-- PARA QUEM É -->
+    <section class="bg-bgCard/90 backdrop-blur-md py-16 md:py-24 mt-10 border-y border-grayBrand/20 relative z-10">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row gap-10 md:gap-12">
+            <div class="md:w-1/3 flex items-start">
+                <h2 class="font-display text-xl sm:text-2xl md:text-3xl leading-snug uppercase sticky top-10 text-center md:text-left w-full">
+                    ESTE PROCESSO É <span class="text-yellowMain text-glow">PARA VOCÊ</span> QUE:
+                </h2>
+            </div>
+            <div class="md:w-2/3 flex flex-col gap-3 md:gap-4">
+                <div class="bg-bgBrand/80 backdrop-blur-sm p-4 md:p-5 rounded border border-grayBrand/20 hover:border-yellowMain flex items-start gap-3 md:gap-4 transition duration-300"><i class="fa-solid fa-check text-yellowMain text-lg md:text-xl mt-1 flex-shrink-0"></i><p class="text-xs sm:text-sm leading-relaxed">Vive fora do Brasil e sente que a ansiedade aumentou depois da mudança</p></div>
+                <div class="bg-bgBrand/80 backdrop-blur-sm p-4 md:p-5 rounded border border-grayBrand/20 hover:border-yellowMain flex items-start gap-3 md:gap-4 transition duration-300"><i class="fa-solid fa-check text-yellowMain text-lg md:text-xl mt-1 flex-shrink-0"></i><p class="text-xs sm:text-sm leading-relaxed">Conquistou a vida no exterior, mas por dentro ainda se sente insegura</p></div>
+                <div class="bg-bgBrand/80 backdrop-blur-sm p-4 md:p-5 rounded border border-grayBrand/20 hover:border-yellowMain flex items-start gap-3 md:gap-4 transition duration-300"><i class="fa-solid fa-check text-yellowMain text-lg md:text-xl mt-1 flex-shrink-0"></i><p class="text-xs sm:text-sm leading-relaxed">Percebe que repete os mesmo padrões emocionais, mesmo tentando ser racional</p></div>
+                <div class="bg-bgBrand/80 backdrop-blur-sm p-4 md:p-5 rounded border border-grayBrand/20 hover:border-yellowMain flex items-start gap-3 md:gap-4 transition duration-300"><i class="fa-solid fa-check text-yellowMain text-lg md:text-xl mt-1 flex-shrink-0"></i><p class="text-xs sm:text-sm leading-relaxed">Já faz terapia ou tentou resolver sozinha, mas sente que a raiz ainda não foi tratada</p></div>
+                <div class="bg-bgBrand/80 backdrop-blur-sm p-4 md:p-5 rounded border border-grayBrand/20 hover:border-yellowMain flex items-start gap-3 md:gap-4 transition duration-300"><i class="fa-solid fa-check text-yellowMain text-lg md:text-xl mt-1 flex-shrink-0"></i><p class="text-xs sm:text-sm leading-relaxed">Quer entender a causa real da ansiedade e não apenas aprender a controlá-la</p></div>
+                <div class="bg-bgBrand/80 backdrop-blur-sm p-4 md:p-5 rounded border border-grayBrand/20 hover:border-yellowMain flex items-start gap-3 md:gap-4 transition duration-300"><i class="fa-solid fa-check text-yellowMain text-lg md:text-xl mt-1 flex-shrink-0"></i><p class="text-xs sm:text-sm leading-relaxed">Busca segurança emocional para tomar decisões com mais confiança no país onde vive</p></div>
+                <div class="bg-bgBrand/80 backdrop-blur-sm p-4 md:p-5 rounded border border-grayBrand/20 hover:border-yellowMain flex items-start gap-3 md:gap-4 transition duration-300"><i class="fa-solid fa-check text-yellowMain text-lg md:text-xl mt-1 flex-shrink-0"></i><p class="text-xs sm:text-sm leading-relaxed">Está cansada de analisar demais e quer acessar o que realmente está por trás da reação</p></div>
+                <div class="bg-bgBrand/80 backdrop-blur-sm p-4 md:p-5 rounded border border-grayBrand/20 hover:border-yellowMain flex items-start gap-3 md:gap-4 transition duration-300"><i class="fa-solid fa-check text-yellowMain text-lg md:text-xl mt-1 flex-shrink-0"></i><p class="text-xs sm:text-sm leading-relaxed">Sente que tem um bloqueio interno travando sua vida profissional, afetiva ou financeira</p></div>
+                <div class="bg-bgBrand/80 backdrop-blur-sm p-4 md:p-5 rounded border border-grayBrand/20 hover:border-yellowMain flex items-start gap-3 md:gap-4 transition duration-300"><i class="fa-solid fa-check text-yellowMain text-lg md:text-xl mt-1 flex-shrink-0"></i><p class="text-xs sm:text-sm leading-relaxed">Não quer apenas falar sobre a dor, mas resolver o que sustenta esse padrão</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CARROSSEL DE DEPOIMENTOS COM FUNDO ANIMADO EXCLUSIVO -->
+    <section class="py-16 md:py-24 relative overflow-hidden z-10 w-full border-y border-grayBrand/20">
+        
+        <!-- Fundo Animado Exclusivo dos Depoimentos -->
+        <div class="absolute inset-0 z-0 pointer-events-none">
+            <div class="absolute inset-0 bg-[#121213] opacity-95"></div> 
+            <div class="testi-light bg-yellowMain w-[60vw] h-[60vw] md:w-[45vw] md:h-[45vw] top-[-10%] left-[-10%]"></div>
+            <div class="testi-light bg-orangeCTA w-[60vw] h-[60vw] md:w-[45vw] md:h-[45vw] bottom-[-10%] right-[-10%]" style="animation-delay: -5s; animation-direction: reverse;"></div>
+            <div class="testi-light bg-yellowLight w-[40vw] h-[40vw] md:w-[30vw] md:h-[30vw] top-[30%] left-[30%]" style="animation-delay: -8s; opacity: 0.2;"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
+            <h2 class="font-display text-xl sm:text-2xl md:text-3xl text-yellowMain text-glow uppercase mb-12">
+                Veja a transformação de quem decidiu <br> <span class="text-white">ir até a causa e passou pelo processo</span>
+            </h2>
+            
+            <div class="swiper mySwiper w-full py-10 relative">
+                <div class="swiper-wrapper">
+                    
+                    <div class="swiper-slide h-auto">
+                        <div class="testi-card bg-bgCard/90 backdrop-blur-xl rounded-xl p-8 h-full flex flex-col items-center justify-center text-center shadow-2xl">
+                            <i class="fa-solid fa-quote-left text-3xl md:text-4xl text-grayBrand/50 mb-6"></i>
+                            <p class="text-sm md:text-base text-gray-300 italic mb-6 leading-relaxed flex-grow">"Antes eu vivia em alerta constante desde que me mudei para Dublin. Qualquer coisa no trabalho me deixava ansiosa. Depois do processo terapêutico com o Caike consegui entender a raiz da minha ansiedade e hoje me sinto muito mais tranquila no dia a dia."</p>
+                            <h4 class="font-bold text-yellowMain uppercase tracking-wider text-sm">Mariana R. – Irlanda</h4>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="testi-card bg-bgCard/90 backdrop-blur-xl rounded-xl p-8 h-full flex flex-col items-center justify-center text-center shadow-2xl">
+                            <i class="fa-solid fa-quote-left text-3xl md:text-4xl text-grayBrand/50 mb-6"></i>
+                            <p class="text-sm md:text-base text-gray-300 italic mb-6 leading-relaxed flex-grow">"O que mais me impressionou foi o mapeamento emocional. Em poucas sessões conseguimos identificar a raiz do que estava causando minha ansiedade desde antes de eu vir morar fora."</p>
+                            <h4 class="font-bold text-yellowMain uppercase tracking-wider text-sm">Fernanda L. – Alemanha</h4>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="testi-card bg-bgCard/90 backdrop-blur-xl rounded-xl p-8 h-full flex flex-col items-center justify-center text-center shadow-2xl">
+                            <i class="fa-solid fa-quote-left text-3xl md:text-4xl text-grayBrand/50 mb-6"></i>
+                            <p class="text-sm md:text-base text-gray-300 italic mb-6 leading-relaxed flex-grow">"Eu tinha muita dúvida se a terapia online funcionaria morando fora do Brasil, mas foi surpreendente. Mesmo à distância consegui acessar memórias muito profundas."</p>
+                            <h4 class="font-bold text-yellowMain uppercase tracking-wider text-sm">Vanessa D. – Itália</h4>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="testi-card bg-bgCard/90 backdrop-blur-xl rounded-xl p-8 h-full flex flex-col items-center justify-center text-center shadow-2xl">
+                            <i class="fa-solid fa-quote-left text-3xl md:text-4xl text-grayBrand/50 mb-6"></i>
+                            <p class="text-sm md:text-base text-gray-300 italic mb-6 leading-relaxed flex-grow">"Eu sempre tentava controlar minha ansiedade sozinha, lendo e fazendo técnicas de respiração, mas ela sempre voltava. No processo conseguimos trabalhar memórias que estavam por trás disso e minha forma de reagir mudou completamente."</p>
+                            <h4 class="font-bold text-yellowMain uppercase tracking-wider text-sm">Camila T. – Canadá</h4>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="testi-card bg-bgCard/90 backdrop-blur-xl rounded-xl p-8 h-full flex flex-col items-center justify-center text-center shadow-2xl">
+                            <i class="fa-solid fa-quote-left text-3xl md:text-4xl text-grayBrand/50 mb-6"></i>
+                            <p class="text-sm md:text-base text-gray-300 italic mb-6 leading-relaxed flex-grow">"Eu já tinha feito terapia antes, mas sentia que ficava muito na conversa. Nesse processo percebi algo diferente porque realmente trabalhamos a origem emocional do problema."</p>
+                            <h4 class="font-bold text-yellowMain uppercase tracking-wider text-sm">Carolina B. – Espanha</h4>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="testi-card bg-bgCard/90 backdrop-blur-xl rounded-xl p-8 h-full flex flex-col items-center justify-center text-center shadow-2xl">
+                            <i class="fa-solid fa-quote-left text-3xl md:text-4xl text-grayBrand/50 mb-6"></i>
+                            <p class="text-sm md:text-base text-gray-300 italic mb-6 leading-relaxed flex-grow">"Para quem vive no exterior e sente ansiedade ou insegurança, recomendo muito. O processo me ajudou a me sentir muito mais estável emocionalmente."</p>
+                            <h4 class="font-bold text-yellowMain uppercase tracking-wider text-sm">Bruna C. – Holanda</h4>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="testi-card bg-bgCard/90 backdrop-blur-xl rounded-xl p-8 h-full flex flex-col items-center justify-center text-center shadow-2xl">
+                            <i class="fa-solid fa-quote-left text-3xl md:text-4xl text-grayBrand/50 mb-6"></i>
+                            <p class="text-sm md:text-base text-gray-300 italic mb-6 leading-relaxed flex-grow">"Quando me mudei para Lisboa comecei a me sentir muito insegura nas decisões da minha vida. O processo me trouxe uma clareza emocional que eu nunca tinha sentido antes."</p>
+                            <h4 class="font-bold text-yellowMain uppercase tracking-wider text-sm">Juliana M. – Portugal</h4>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="testi-card bg-bgCard/90 backdrop-blur-xl rounded-xl p-8 h-full flex flex-col items-center justify-center text-center shadow-2xl">
+                            <i class="fa-solid fa-quote-left text-3xl md:text-4xl text-grayBrand/50 mb-6"></i>
+                            <p class="text-sm md:text-base text-gray-300 italic mb-6 leading-relaxed flex-grow">"O método é muito estruturado. Cada sessão tem um propósito claro e você sente que existe um processo acontecendo, não é algo aleatório."</p>
+                            <h4 class="font-bold text-yellowMain uppercase tracking-wider text-sm">Larissa G. – Inglaterra</h4>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="testi-card bg-bgCard/90 backdrop-blur-xl rounded-xl p-8 h-full flex flex-col items-center justify-center text-center shadow-2xl">
+                            <i class="fa-solid fa-quote-left text-3xl md:text-4xl text-grayBrand/50 mb-6"></i>
+                            <p class="text-sm md:text-base text-gray-300 italic mb-6 leading-relaxed flex-grow">"Mesmo com a diferença de fuso e a rotina corrida aqui, o acompanhamento funcionou muito bem. Foi muito mais profundo do que eu imaginava."</p>
+                            <h4 class="font-bold text-yellowMain uppercase tracking-wider text-sm">Daniela P. – Suíça</h4>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="testi-card bg-bgCard/90 backdrop-blur-xl rounded-xl p-8 h-full flex flex-col items-center justify-center text-center shadow-2xl">
+                            <i class="fa-solid fa-quote-left text-3xl md:text-4xl text-grayBrand/50 mb-6"></i>
+                            <p class="text-sm md:text-base text-gray-300 italic mb-6 leading-relaxed flex-grow">"Depois das sessões percebi algo muito diferente. Situações simples do trabalho que antes me deixavam extremamente ansiosa simplesmente pararam de me afetar da mesma forma."</p>
+                            <h4 class="font-bold text-yellowMain uppercase tracking-wider text-sm">Renata F. – Austrália</h4>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="testi-card bg-bgCard/90 backdrop-blur-xl rounded-xl p-8 h-full flex flex-col items-center justify-center text-center shadow-2xl">
+                            <i class="fa-solid fa-quote-left text-3xl md:text-4xl text-grayBrand/50 mb-6"></i>
+                            <p class="text-sm md:text-base text-gray-300 italic mb-6 leading-relaxed flex-grow">"Dá para perceber que existe um método por trás. O trabalho é muito focado em identificar e tratar a causa do sintoma, não apenas aliviar momentaneamente."</p>
+                            <h4 class="font-bold text-yellowMain uppercase tracking-wider text-sm">Patrícia A. – França</h4>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="testi-card bg-bgCard/90 backdrop-blur-xl rounded-xl p-8 h-full flex flex-col items-center justify-center text-center shadow-2xl">
+                            <i class="fa-solid fa-quote-left text-3xl md:text-4xl text-grayBrand/50 mb-6"></i>
+                            <p class="text-sm md:text-base text-gray-300 italic mb-6 leading-relaxed flex-grow">"Morar fora trouxe muitas pressões emocionais para mim. O processo me ajudou a reorganizar tudo isso e hoje me sinto muito mais equilibrada."</p>
+                            <h4 class="font-bold text-yellowMain uppercase tracking-wider text-sm">Amanda S. – Estados Unidos</h4>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Setas de Navegação -->
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- SOBRE CAIKE SANTANA (LIMPO) -->
+    <section class="max-w-6xl mx-auto px-4 py-16 md:py-24 relative z-10">
+        <div class="bg-bgCard rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-[0_20px_50px_rgba(0,0,0,0.8)] p-6 md:p-12 gap-10 md:gap-14">
+            
+            <div class="md:w-5/12 relative">
+                <img src="caike.jpg" alt="Caike Santana" class="w-full h-full object-cover rounded-2xl shadow-2xl min-h-[350px] md:min-h-[500px] grayscale contrast-125 brightness-90">
+            </div>
+            
+            <div class="md:w-7/12 flex flex-col justify-center relative z-10 pt-4 md:pt-0">
+                <span class="inline-block self-start bg-[#4d4019] text-[#FFCE00] text-xs font-bold uppercase tracking-widest py-1.5 px-5 rounded-full mb-6">Sobre</span>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-black mb-8 font-sans">
+                    <span class="text-white">Caike</span> <span class="text-orangeCTA">Santana</span>
+                </h2>
+                
+                <div class="space-y-5 text-sm md:text-base text-gray-300 leading-relaxed pr-0 md:pr-4">
+                    <p><strong class="text-white font-semibold">Especialista em Reestruturação Emocional</strong> e criador de um processo terapêutico focado no tratamento da raiz da ansiedade.</p>
+                    <p>Ao longo da sua trajetória, Caike desenvolveu uma abordagem estruturada que vai além da conversa superficial. O foco do seu trabalho é identificar e atualizar as memórias que sustentam padrões emocionais repetitivos, insegurança e bloqueios internos.</p>
+                    <p>Seu método é direcionado especialmente para <strong class="text-yellowMain font-semibold">mulheres brasileiras que vivem no exterior</strong> e perceberam que a mudança de país não resolveu o que sentem por dentro.</p>
+                    <p>Em vez de trabalhar apenas o sintoma, Caike conduz um processo estratégico que reorganiza a resposta emocional na origem, permitindo que a transformação aconteça de forma consistente.</p>
+                    <p>Hoje ele atende mulheres ao redor do mundo que buscam segurança emocional, clareza nas decisões e liberdade para viver com mais leveza no país que escolheram construir suas vidas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA INFERIOR COM LINK DO STRIPE -->
+    <section class="max-w-5xl mx-auto px-4 pb-16 md:pb-20 text-center relative z-10">
+        <h2 class="font-display text-xl sm:text-2xl md:text-3xl mb-6 md:mb-8 uppercase text-shadow">
+            PRONTA PARA <span class="text-yellowMain text-glow">DESBLOQUEAR SUA VIDA?</span>
+        </h2>
+        <div class="flex justify-center">
+            <a href="https://buy.stripe.com/bJe14p8dE6wi2Ikdn7ffy00" target="_blank" rel="noopener noreferrer" class="bg-orangeCTA hover:bg-orangeHover text-white text-center font-bold text-base sm:text-lg py-4 sm:py-5 px-6 sm:px-10 rounded shadow-[0_0_35px_rgba(255,66,0,0.5)] transition transform hover:-translate-y-1 w-full max-w-lg uppercase tracking-wide">
+                QUERO MUDAR ESSA HISTÓRIA
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-bgCard/90 backdrop-blur-md border-t border-grayBrand/20 w-full py-6 md:py-8 text-center text-[10px] sm:text-xs text-grayBrand font-medium relative z-10">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4">
+            <p>© CAIKE SANTANA - 2026. DIREITOS AUTORAIS RESERVADOS.</p>
+            <div class="flex items-center gap-2">
+                <span>Desenvolvido com excelência</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <!-- Inicialização do Carrossel -->
+    <script>
+        var swiper = new Swiper(".mySwiper", {
+            loop: true,                 
+            centeredSlides: true,       
+            slidesPerView: 1.2,         
+            spaceBetween: 20,           
+            grabCursor: true,           
+            autoplay: {                 
+                delay: 4000,
+                disableOnInteraction: false,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            breakpoints: {
+                640: { slidesPerView: 2, spaceBetween: 30 },
+                1024: { slidesPerView: 3, spaceBetween: 40 },
+            },
+        });
+    </script>
+</body>
+</html>
